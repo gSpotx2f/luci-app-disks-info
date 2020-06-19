@@ -1,0 +1,18 @@
+{
+	"admin/services/disks-info": {
+		"title": "Disks info",
+		"order": 10,
+		"action": {
+			"type": "view",
+			"path": "disks-info"
+		},
+		"depends": {
+			"acl": [ "luci-app-disks-info" ],
+			"fs": {
+				"/bin/df": "executable",
+				"/usr/sbin/fdisk": "executable",
+				"/usr/sbin/smartctl": "executable"
+			}
+		}
+	}
+}
