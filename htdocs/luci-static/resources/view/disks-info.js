@@ -322,8 +322,8 @@ return L.view.extend({
 
 		let svgWidth = 900;
 		let svgHeight = 300;
-		let tempValueMul = 4;								// 1C == 4px
-		let tempOffset = 10;								// lowest temp value: 10C
+		let tempValueMul = 3;								// 1C == 3px
+		let tempOffset = 0;									// lowest temp value: 0C
 		let tempStep = 5;									// 5C step
 		let timeStep = svgWidth / dataSize;
 		let timeLineInterval = Math.ceil(dataSize / 32);	// 4 intervals (5 x 4 = 20 min)
@@ -366,7 +366,7 @@ return L.view.extend({
 			lineC.setAttribute('y1', svgHeight - (this.diskTempCritical - tempOffset) * tempValueMul);
 			lineC.setAttribute('x2', '100%');
 			lineC.setAttribute('y2', svgHeight - (this.diskTempCritical - tempOffset) * tempValueMul);
-			lineC.setAttribute('style', 'stroke:red; stroke-width:0.8');
+			lineC.setAttribute('style', 'stroke:red; stroke-width:0.7');
 		svg.appendChild(lineC);
 
 		// time labels
@@ -380,9 +380,9 @@ return L.view.extend({
 				line.setAttribute('style', 'stroke:black; stroke-width:1; opacity:0.1');
 			svg.appendChild(line);
 			let text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-				text.setAttribute('x', i + 4);
+				text.setAttribute('x', i + 6);
 				text.setAttribute('y', 0);
-				text.setAttribute('style', 'fill:rgba(122,122,122,0.4); font-size:12px; font-family:sans-serif; font-weight:bold; writing-mode:vertical-rl');
+				text.setAttribute('style', 'fill:rgba(122,122,122,0.5); font-family:monospace; font-size:12px; font-weight:bold; writing-mode:vertical-rl');
 				if(i >= 2 * timeStep * timeLineInterval) {
 					text.appendChild(document.createTextNode('%02d.%02d %02d:%02d'.format(
 						dataUnits[j][2].getDate(),
@@ -411,7 +411,7 @@ return L.view.extend({
 			let text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
 				text.setAttribute('x', 0);
 				text.setAttribute('y', i - 3);
-				text.setAttribute('style', 'fill:#eee; font-size:14px; font-family:sans-serif; text-shadow:1px 1px 1px #000');
+				text.setAttribute('style', 'fill:#eee; font-size:normal; text-shadow:1px 1px 1px #000');
 				if(c % 2 === 0) {
 					text.appendChild(document.createTextNode(((svgHeight - i) / tempValueMul) + tempOffset + ' °C'));
 				};
