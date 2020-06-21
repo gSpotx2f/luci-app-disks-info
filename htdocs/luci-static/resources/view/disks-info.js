@@ -181,7 +181,6 @@ return L.view.extend({
 		);
 
 		for(let attr of smartObject.ata_smart_attributes.table) {
-
 			let tempValue;
 			let lineStyle = (attr.value <= attr.thresh) ? 'tr err' :
 				(this.smartCriticalAttrs.includes(attr.id) && attr.raw.value > 0) ? 'tr warn' :
@@ -378,7 +377,7 @@ return L.view.extend({
 				line.setAttribute('y1', 0);
 				line.setAttribute('x2', i);
 				line.setAttribute('y2', '100%');
-				line.setAttribute('style', 'stroke:black; stroke-width:0.05');
+				line.setAttribute('style', 'stroke:black; stroke-width:1; opacity:0.1');
 			svg.appendChild(line);
 			let text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
 				text.setAttribute('x', i + 4);
@@ -407,7 +406,7 @@ return L.view.extend({
 				line.setAttribute('y1', i);
 				line.setAttribute('x2', '100%');
 				line.setAttribute('y2', i);
-				line.setAttribute('style', 'stroke:black; stroke-width:0.05');
+				line.setAttribute('style', 'stroke:black; stroke-width:1; opacity:0.1');
 			svg.appendChild(line);
 			let text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
 				text.setAttribute('x', 0);
