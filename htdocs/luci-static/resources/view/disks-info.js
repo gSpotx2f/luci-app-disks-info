@@ -411,7 +411,7 @@ return L.view.extend({
 			let text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
 				text.setAttribute('x', 0);
 				text.setAttribute('y', i - 3);
-				text.setAttribute('style', 'fill:#eee; font-size:normal; text-shadow:1px 1px 1px #000');
+				text.setAttribute('style', 'fill:#eee; font-family:monospace; font-size:14px; text-shadow:1px 1px 1px #000');
 				if(c % 2 === 0) {
 					text.appendChild(document.createTextNode(((svgHeight - i) / tempValueMul) + tempOffset + ' °C'));
 				};
