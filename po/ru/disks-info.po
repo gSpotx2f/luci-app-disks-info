@@ -158,6 +158,9 @@ msgstr "Рекомендованная мин"
 msgid "Refresh devices"
 msgstr "Обновить устройства"
 
+msgid "Rotating Media Statistics"
+msgstr "Статистика механической части"
+
 msgid "Rotation Rate"
 msgstr "Скорость вращения"
 

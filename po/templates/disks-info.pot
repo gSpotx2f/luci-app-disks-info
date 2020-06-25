@@ -148,6 +148,9 @@ msgstr ""
 msgid "Refresh devices"
 msgstr ""
 
+msgid "Rotating Media Statistics"
+msgstr ""
+
 msgid "Rotation Rate"
 msgstr ""
 
