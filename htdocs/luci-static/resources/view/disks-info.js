@@ -56,27 +56,46 @@ return L.view.extend({
 				E('em', {}, _('No mounted filesystems'))
 			)
 		);
+		let partitionsTableTitles = [
+			_('Device'),
+			_('Boot'),
+			_('Start'),
+			_('End'),
+			_('Sectors'),
+			_('Size'),
+			_('Id'),
+			_('Type'),
+		];
 		let partitionsTable = E('div', { 'class': 'table' },
 			E('div', { 'class': 'tr table-titles' }, [
-				E('div', { 'class': 'th left', 'width': '12%' }, _('Device')),
-				E('div', { 'class': 'th left', 'width': '12%' }, _('Boot')),
-				E('div', { 'class': 'th left', 'width': '12%' }, _('Start')),
-				E('div', { 'class': 'th left', 'width': '12%' }, _('End')),
-				E('div', { 'class': 'th left', 'width': '12%' }, _('Sectors')),
-				E('div', { 'class': 'th left', 'width': '12%' }, _('Size')),
-				E('div', { 'class': 'th left', 'width': '12%' }, _('Id')),
-				E('div', { 'class': 'th left', 'width': '12%' }, _('Type')),
+				E('div', { 'class': 'th left', 'width': '12%' }, partitionsTableTitles[0]),
+				E('div', { 'class': 'th left', 'width': '12%' }, partitionsTableTitles[1]),
+				E('div', { 'class': 'th left', 'width': '12%' }, partitionsTableTitles[2]),
+				E('div', { 'class': 'th left', 'width': '12%' }, partitionsTableTitles[3]),
+				E('div', { 'class': 'th left', 'width': '12%' }, partitionsTableTitles[4]),
+				E('div', { 'class': 'th left', 'width': '12%' }, partitionsTableTitles[5]),
+				E('div', { 'class': 'th left', 'width': '12%' }, partitionsTableTitles[6]),
+				E('div', { 'class': 'th left', 'width': '12%' }, partitionsTableTitles[7]),
 			])
 		);
+		let dfTableTitles = [
+			_('Filesystem'),
+			_('Type'),
+			_('Size'),
+			_('Used'),
+			_('Available'),
+			_('Use') + ' %',
+			_('Mounted on'),
+		];
 		let dfTable = E('div', { 'class': 'table' },
 			E('div', { 'class': 'tr table-titles' }, [
-				E('div', { 'class': 'th left', 'width': '14%' }, _('Filesystem')),
-				E('div', { 'class': 'th left', 'width': '14%' }, _('Type')),
-				E('div', { 'class': 'th left', 'width': '14%' }, _('Size')),
-				E('div', { 'class': 'th left', 'width': '14%' }, _('Used')),
-				E('div', { 'class': 'th left', 'width': '14%' }, _('Available')),
-				E('div', { 'class': 'th center', 'width': '14%' }, _('Use') + ' %'),
-				E('div', { 'class': 'th left', 'width': '14%' }, _('Mounted on')),
+				E('div', { 'class': 'th left', 'width': '14%' }, dfTableTitles[0]),
+				E('div', { 'class': 'th left', 'width': '14%' }, dfTableTitles[1]),
+				E('div', { 'class': 'th left', 'width': '14%' }, dfTableTitles[2]),
+				E('div', { 'class': 'th left', 'width': '14%' }, dfTableTitles[3]),
+				E('div', { 'class': 'th left', 'width': '14%' }, dfTableTitles[4]),
+				E('div', { 'class': 'th center', 'width': '14%' }, dfTableTitles[5]),
+				E('div', { 'class': 'th left', 'width': '14%' }, dfTableTitles[6]),
 			])
 		);
 
@@ -84,7 +103,6 @@ return L.view.extend({
 			partitions = partitions.map(e => e.split(/\s+/));
 
 			for(let i = 1; i < partitions.length; i++) {
-
 				let device, boot, start, end, sectors, size, id, type;
 				if(partitions[i][1] === '*') {
 					[ device, boot, start, end, sectors, size, id, ...type ] = partitions[i];
@@ -93,9 +111,17 @@ return L.view.extend({
 				};
 
 				let tr = E('div', { 'class': 'tr' });
-				for(let field of [ device, boot || '', start, end, sectors, size, id, type.join(' ') ]) {
-					tr.append(E('div', { 'class': 'td left', 'width': '12%' }, field));
-				};
+				[ device, boot || '&#160;', start, end, sectors, size, id, type.join(' ') ].forEach(
+					(elem, index, array) => {
+						tr.append(
+							E('div', {
+								'class': 'td left',
+								'width': '12%',
+								'data-title': partitionsTableTitles[index],
+							}, elem)
+						);
+					}
+				);
 
 				partitionsTable.append(tr);
 			};
@@ -116,6 +142,7 @@ return L.view.extend({
 										'class': (i === 5 && parseInt(fields[i]) >= this.fsSpaceWarning) ?
 											'td left warn' : 'td left',
 										'width': '14%',
+										'data-title': dfTableTitles[i],
 									},
 									(i === 5) ? E('div', {
 											'class': 'cbi-progressbar',
@@ -191,23 +218,28 @@ return L.view.extend({
 				E('div', {
 					'class': lineStyle,
 				}, [
-					E('div', { 'class': 'td right', 'width': '14%' },
+					E('div', { 'class': 'td right', 'width': '14%', 'data-title': _('Id') },
 						E('span', {
 							'style': 'cursor:help; border-bottom:1px dotted',
 							'data-tooltip': 'hex: %02X'.format(attr.id)
 						}, attr.id)
 					),
-					E('div', { 'class': 'td left', 'width': '14%' }, attr.name.replace(/_/g, ' ')),
-					E('div', { 'class': 'td left', 'width': '14%' },
+					E('div', { 'class': 'td left', 'width': '14%', 'data-title': _('Attribute name') },
+						attr.name.replace(/_/g, ' ')),
+					E('div', { 'class': 'td left', 'width': '14%', 'data-title': _('RAW') },
 						E('span', {
 							'style': 'cursor:help; border-bottom:1px dotted; font-weight:bold',
 							'data-tooltip': 'hex: %012X'.format(attr.raw.value)
 						}, attr.raw.string)
 					),
-					E('div', { 'class': 'td left', 'width': '14%' }, '%03d'.format(attr.value)),
-					E('div', { 'class': 'td left', 'width': '14%' }, '%03d'.format(attr.worst)),
-					E('div', { 'class': 'td left', 'width': '14%' }, '%03d'.format(attr.thresh)),
-					E('div', { 'class': 'td left', 'width': '14%' }, attr.when_failed || '-'),
+					E('div', { 'class': 'td left', 'width': '14%', 'data-title': _('VALUE') },
+						'%03d'.format(attr.value)),
+					E('div', { 'class': 'td left', 'width': '14%', 'data-title': _('WORST') },
+						'%03d'.format(attr.worst)),
+					E('div', { 'class': 'td left', 'width': '14%', 'data-title': _('THRESH') },
+						'%03d'.format(attr.thresh)),
+					E('div', { 'class': 'td left', 'width': '14%', 'data-title': _('WHEN FAILED') },
+						attr.when_failed || '-'),
 				])
 			);
 		};
@@ -262,37 +294,37 @@ return L.view.extend({
 					}, [
 						E('div', { 'class': 'td left', 'width': '33%' }, _('Current') + ':'),
 						E('div', { 'class': 'td left' }, ('current' in smartObject.temperature) ?
-							smartObject.temperature.current  + ' &#176;C' : null),
+							smartObject.temperature.current  + ' °C' : null),
 					]),
 					E('div', { 'class': 'tr' }, [
 						E('div', { 'class': 'td left', 'width': '33%' }, _('Lifetime min') + ':'),
 						E('div', { 'class': 'td left' }, ('lifetime_min' in smartObject.temperature) ?
-							smartObject.temperature.lifetime_min  + ' &#176;C' : null),
+							smartObject.temperature.lifetime_min  + ' °C' : null),
 					]),
 					E('div', { 'class': 'tr' }, [
 						E('div', { 'class': 'td left', 'width': '33%' }, _('Lifetime max') + ':'),
 						E('div', { 'class': 'td left' }, ('lifetime_max' in smartObject.temperature) ?
-							smartObject.temperature.lifetime_max  + ' &#176;C' : null),
+							smartObject.temperature.lifetime_max  + ' °C' : null),
 					]),
 					E('div', { 'class': 'tr' }, [
 						E('div', { 'class': 'td left', 'width': '33%' }, _('Recommended min') + ':'),
 						E('div', { 'class': 'td left' }, ('op_limit_min' in smartObject.temperature) ?
-							smartObject.temperature.op_limit_min  + ' &#176;C' : null),
+							smartObject.temperature.op_limit_min  + ' °C' : null),
 					]),
 					E('div', { 'class': 'tr' }, [
 						E('div', { 'class': 'td left', 'width': '33%' }, _('Recommended max') + ':'),
 						E('div', { 'class': 'td left' }, ('op_limit_max' in smartObject.temperature) ?
-							smartObject.temperature.op_limit_max  + ' &#176;C' : null),
+							smartObject.temperature.op_limit_max  + ' °C' : null),
 					]),
 					E('div', { 'class': 'tr' }, [
 						E('div', { 'class': 'td left', 'width': '33%' }, _('Limit min') + ':'),
 						E('div', { 'class': 'td left' }, ('limit_min' in smartObject.temperature) ?
-							smartObject.temperature.limit_min  + ' &#176;C' : null),
+							smartObject.temperature.limit_min  + ' °C' : null),
 					]),
 					E('div', { 'class': 'tr' }, [
 						E('div', { 'class': 'td left', 'width': '33%' }, _('Limit max') + ':'),
 						E('div', { 'class': 'td left' }, ('limit_max' in smartObject.temperature) ?
-							smartObject.temperature.limit_max  + ' &#176;C' : null),
+							smartObject.temperature.limit_max  + ' °C' : null),
 					]),
 				])
 			),
@@ -429,7 +461,7 @@ return L.view.extend({
 			E('div', { 'class': 'tr table-titles' }, [
 				E('div', { 'class': 'th left', 'width': '33%' }, _('Index')),
 				E('div', { 'class': 'th left', 'width': '33%' }, _('Estimated time')),
-				E('div', { 'class': 'th left' }, _('Temperature') + ' &#176;C'),
+				E('div', { 'class': 'th left' }, _('Temperature') + ' °C'),
 			])
 		);
 
@@ -442,8 +474,9 @@ return L.view.extend({
 					'class': (temp >= this.diskTempCritical) ? 'tr err' :
 						(temp >= this.diskTempWarning) ? 'tr warn' : 'tr',
 				}, [
-					E('div', { 'class': 'td left', 'width': '33%' }, num),
-					E('div', { 'class': 'td left', 'width': '33%' },
+					E('div', { 'class': 'td left', 'width': '33%', 'data-title': _('Index') },
+						num),
+					E('div', { 'class': 'td left', 'width': '33%', 'data-title': _('Estimated time') },
 						'%d-%02d-%02d %02d:%02d'.format(
 							date.getFullYear(),
 							date.getMonth() + 1,
@@ -451,7 +484,8 @@ return L.view.extend({
 							date.getHours(),
 							date.getMinutes()
 					)),
-					E('div', { 'class': 'td left' }, temp),
+					E('div', { 'class': 'td left', 'data-title': _('Temperature') + ' °C' },
+						temp),
 				])
 			);
 		};
@@ -471,10 +505,12 @@ return L.view.extend({
 					`${_('SCT temperature history')} (${_('interval')}: ${intervalMin} ${_('min')}.):`)
 			),
 			E('div', { 'class': 'cbi-value' }, [
-				E('div', {
-					'style': 'width:' + svgWidth + 'px; height:' + svgHeight + 'px; margin:auto',
-				}, svg),
-				E('div', { 'style': 'width:100%; max-height:20em; overflow:auto; margin-top:1em' },
+				E('div', { 'style': 'width:100%; min-height:' + (svgHeight + 20) + 'px; overflow:auto' },
+					E('div', {
+						'style': 'width:' + svgWidth + 'px; height:' + svgHeight + 'px; margin:auto',
+					}, svg)
+				),
+				E('div', { 'style': 'width:100%; max-height:20em; overflow:auto; margin-top:0.2em' },
 					sctTempTable
 				),
 			]),
@@ -753,7 +789,6 @@ return L.view.extend({
 						};
 						if('ata_device_statistics' in smartObject) {
 							let ssdStatObject = smartObject.ata_device_statistics.pages.find(e => e.number == 7);
-
 							if(ssdStatObject) {
 								let ssdArea = this.createSsdArea(ssdStatObject);
 								if(ssdArea) {

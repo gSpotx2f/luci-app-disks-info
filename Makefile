@@ -7,7 +7,7 @@
 include $(TOPDIR)/rules.mk
 
 PKG_VERSION:=0.3
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 LUCI_TITLE:=Information about connected disk devices (partitions, filesystems, SMART).
 LUCI_DEPENDS:=+fdisk +smartmontools +smartmontools-drivedb
 LUCI_PKGARCH:=all
