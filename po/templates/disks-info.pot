@@ -226,6 +226,9 @@ msgstr ""
 msgid "WORST"
 msgstr ""
 
+msgid "Write to device memory"
+msgstr ""
+
 msgid "blocks"
 msgstr ""
 
