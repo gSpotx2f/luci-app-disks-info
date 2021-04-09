@@ -134,8 +134,8 @@ msgstr "Нет смонтированных файловых систем"
 msgid "No partitions available"
 msgstr "Нет доступных разделов"
 
-msgid "Отсутсвует в базе smartctl [подробно: -P showall]"
-msgstr ""
+msgid "Not in smartctl database [for details use: -P showall]"
+msgstr "Отсутствует в базе smartctl [подробно: -P showall]"
 
 msgid "Partitions"
 msgstr "Разделы"

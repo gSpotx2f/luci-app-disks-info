@@ -2,6 +2,38 @@
 'require fs';
 'require ui';
 
+document.head.append(E('style', {'type': 'text/css'},
+`
+.label-status {
+	display: inline;
+	margin: 0 4px !important;
+	padding: 1px 4px;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+	text-transform: uppercase;
+	font-weight: bold;
+	line-height: 1.6em;
+	color: #fff !important;
+}
+.ok {
+	background-color: #2ea256 !important;
+}
+.warn {
+	background-color: #fff7e2 !important;
+}
+.err {
+	background-color: #ff4e54 !important;
+	color: #fff !important;
+}
+.err .td {
+	color: #fff !important;
+}
+.err td {
+	color: #fff !important;
+}
+`));
+
 return L.view.extend({
 	fsSpaceWarning: 90,
 
@@ -667,40 +699,6 @@ return L.view.extend({
 	},
 
 	render: function(devices) {
-
-		document.head.append(E('style', {'type': 'text/css'},
-`
-.label-status {
-	display: inline;
-	margin: 0 4px !important;
-	padding: 1px 4px;
-	-webkit-border-radius: 3px;
-	-moz-border-radius: 3px;
-	border-radius: 3px;
-	text-transform: uppercase;
-	font-weight: bold;
-	line-height: 1.6em;
-	color: #fff !important;
-}
-.ok {
-	background-color: #2ea256 !important;
-}
-.warn {
-	background-color: #fff7e2 !important;
-}
-.err {
-	background-color: #ff4e54 !important;
-	color: #fff !important;
-}
-.err .td {
-	color: #fff !important;
-}
-.err td {
-	color: #fff !important;
-}
-`
-		));
-
 		let devicesNode = E('div', { 'class': 'cbi-section fade-in' },
 			E('div', { 'class': 'cbi-section-node' },
 				E('div', { 'class': 'cbi-value' },
@@ -778,6 +776,7 @@ return L.view.extend({
 						};
 						if('ata_device_statistics' in smartObject) {
 							let ssdStatObject = smartObject.ata_device_statistics.pages.find(e => e.number == 7);
+
 							if(ssdStatObject) {
 								let ssdArea = this.createSsdArea(ssdStatObject);
 								if(ssdArea) {
