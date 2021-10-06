@@ -56,11 +56,14 @@ msgstr "Идентификатор диска"
 msgid "Disklabel type"
 msgstr "Тип разметки диска"
 
-msgid "Disks info"
-msgstr "Информация о дисках"
+msgid "Disk devices"
+msgstr "Дисковые устройства"
 
 msgid "End"
 msgstr "Конец"
+
+msgid "Error number"
+msgstr "Номер ошибки"
 
 msgid "Estimated time"
 msgstr "Расчётное время"
@@ -94,6 +97,9 @@ msgstr "Находится в базе smartctl [подробно: -P show]"
 
 msgid "Index"
 msgstr "Индекс"
+
+msgid "Information about the connected disk devices."
+msgstr "Информация о подключенных дисковых устройствах."
 
 msgid "LU WWN Device Id"
 msgstr ""
@@ -140,8 +146,8 @@ msgstr "Отсутствует в базе smartctl [подробно: -P showal
 msgid "Partitions"
 msgstr "Разделы"
 
-msgid "Percentage used endurance indicator"
-msgstr "Процентный индикатор износа"
+msgid "Percentage Used Endurance Indicator"
+msgstr "Процентный Индикатор Износа"
 
 msgid "Preserve across power cycles"
 msgstr "Сохранить при выключении питания"
@@ -159,7 +165,7 @@ msgid "Refresh devices"
 msgstr "Обновить устройства"
 
 msgid "Rotating Media Statistics"
-msgstr "Статистика механической части"
+msgstr "Статистика Механической Части"
 
 msgid "Rotation Rate"
 msgstr "Скорость вращения"
@@ -197,14 +203,17 @@ msgstr "Серийный номер"
 msgid "Size"
 msgstr "Размер"
 
-msgid "SSD"
-msgstr ""
+msgid "Solid State Device Statistics"
+msgstr "Статистика SSD"
 
 msgid "Start"
 msgstr "Начало"
 
 msgid "Temperature"
 msgstr "Температура"
+
+msgid "Temperature Statistics"
+msgstr "Статистика Температуры"
 
 msgid "THRESH"
 msgstr ""

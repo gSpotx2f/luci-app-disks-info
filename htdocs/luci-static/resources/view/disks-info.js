@@ -4,7 +4,11 @@
 
 document.head.append(E('style', {'type': 'text/css'},
 `
-.label-status {
+:root {
+	--app-disks-info-dark-font-color: #2e2e2e;
+	--app-disks-info-light-font-color: #fff;
+}
+.disks-info-label-status {
 	display: inline;
 	margin: 0 4px !important;
 	padding: 1px 4px;
@@ -14,23 +18,30 @@ document.head.append(E('style', {'type': 'text/css'},
 	text-transform: uppercase;
 	font-weight: bold;
 	line-height: 1.6em;
-	color: #fff !important;
 }
-.ok {
+.disks-info-ok {
 	background-color: #2ea256 !important;
+	color: var(--app-disks-info-light-font-color) !important;
 }
-.warn {
+.disks-info-warn {
 	background-color: #fff7e2 !important;
+	color: var(--app-disks-info-dark-font-color) !important;
 }
-.err {
+.disks-info-warn .td {
+	color: var(--app-disks-info-dark-font-color) !important;
+}
+.disks-info-warn td {
+	color: var(--app-disks-info-dark-font-color) !important;
+}
+.disks-info-err {
 	background-color: #ff4e54 !important;
-	color: #fff !important;
+	color: var(--app-disks-info-light-font-color) !important;
 }
-.err .td {
-	color: #fff !important;
+.disks-info-err .td {
+	color: var(--app-disks-info-light-font-color) !important;
 }
-.err td {
-	color: #fff !important;
+.disks-info-err td {
+	color: var(--app-disks-info-light-font-color) !important;
 }
 `));
 
@@ -61,9 +72,15 @@ return L.view.extend({
 		let num = document.getElementById('logging_interval_value' + deviceNormalized).value;
 		let pSave = document.getElementById('logging_interval_type' + deviceNormalized).checked;
 
+		if(/^[0-9]{1,2}$/.test(num) && Number(num) > 0) {
+			num = String(Number(num));
+		} else {
+			return;
+		};
+
 		return fs.exec('/usr/sbin/smartctl',
 			[ '-l', 'scttempint,' + (pSave ? num + ',p' : num), device ]
-		).then((res) => {
+		).then(res => {
 			window.location.reload();
 		}).catch(e => ui.addNotification(null, E('p', {}, e.message)));
 	},
@@ -175,7 +192,7 @@ return L.view.extend({
 							tr.append(
 								E('div', {
 										'class': (i === 5 && parseInt(fields[i]) >= this.fsSpaceWarning) ?
-											'td left warn' : 'td left',
+											'td left disks-info-warn' : 'td left',
 										'data-title': dfTableTitles[i],
 									},
 									(i === 5) ? E('div', {
@@ -218,8 +235,8 @@ return L.view.extend({
 
 	createSmartTable: function(smartObject) {
 		let smartStatusLabel = (smartObject.smart_status.passed) ?
-			E('span', { 'class': 'label-status ok' }, _('passed')) :
-			E('span', { 'class': 'label-status err' }, _('failed'));
+			E('span', { 'class': 'disks-info-label-status disks-info-ok' }, _('passed')) :
+			E('span', { 'class': 'disks-info-label-status disks-info-err' }, _('failed'));
 
 		let smartStatus = E('h5', { 'style': 'width:100% !important; text-align:center !important' }, [
 			_('SMART overall-health self-assessment test result:'),
@@ -240,10 +257,10 @@ return L.view.extend({
 
 		for(let attr of smartObject.ata_smart_attributes.table) {
 			let tempValue;
-			let lineStyle = (attr.value <= attr.thresh) ? 'tr err' :
-				(this.smartCriticalAttrs.includes(attr.id) && attr.raw.value > 0) ? 'tr warn' :
+			let lineStyle = (attr.value <= attr.thresh) ? 'tr disks-info-err' :
+				(this.smartCriticalAttrs.includes(attr.id) && attr.raw.value > 0) ? 'tr disks-info-warn' :
 					(this.smartTempAttrs.includes(attr.id) && +(attr.raw.string.split(' ')[0]) >= this.diskTempWarning) ?
-					'tr warn' : 'tr';
+					'tr disks-info-warn' : 'tr';
 
 			smartAttrsTable.append(
 				E('div', {
@@ -285,13 +302,15 @@ return L.view.extend({
 	createErrorLog: function(table) {
 		let errorLogTable = E('div', { 'class': 'table' },
 			E('div', { 'class': 'tr table-titles' }, [
-				E('div', { 'class': 'th left', 'style':'min-width:33%' }, _('Lifetime hours')),
+				E('div', { 'class': 'th left', 'style':'min-width:16%' }, _('Error number')),
+				E('div', { 'class': 'th left', 'style':'min-width:17%' }, _('Lifetime hours')),
 				E('div', { 'class': 'th left' }, _('Description')),
 			])
 		);
 		for(let errObj of table) {
 			errorLogTable.append(
 				E('div', { 'class': 'tr' }, [
+					E('div', { 'class': 'td left' }, errObj.error_number),
 					E('div', { 'class': 'td left' }, errObj.lifetime_hours),
 					E('div', { 'class': 'td left' }, errObj.error_description),
 				])
@@ -311,8 +330,8 @@ return L.view.extend({
 			E('div', { 'class': 'table' }, [
 				E('div', {
 					'class': (smartObject.temperature.current >= smartObject.temperature.op_limit_max) ?
-						'tr err' : (smartObject.temperature.current >= this.diskTempWarning) ?
-							'tr warn' : 'tr',
+						'tr disks-info-err' : (smartObject.temperature.current >= this.diskTempWarning) ?
+							'tr disks-info-warn' : 'tr',
 				}, [
 					E('div', { 'class': 'td left', 'style':'min-width:33%' }, _('Current') + ':'),
 					E('div', { 'class': 'td left' }, ('current' in smartObject.temperature) ?
@@ -360,6 +379,13 @@ return L.view.extend({
 		let dataSize = smartObject.ata_sct_temperature_history.size;
 		let tempData = smartObject.ata_sct_temperature_history.table;
 		let dataUnits = [];
+		let tempMin = tempData.reduce(
+			(min, current) => (current < min && current !== null) ? current : min,
+			Infinity);
+		let tempMax = tempData.reduce(
+			(max, current) => (current > max && current !== null) ? current : max,
+			-Infinity);
+		let tempDiff = tempMax - tempMin;
 
 		let i = dataSize - 1;
 		while(i >= 0) {
@@ -375,12 +401,11 @@ return L.view.extend({
 
 		let svgWidth = 900;
 		let svgHeight = 300;
-		let tempValueMul = 3;								// 1C == 3px
-		let tempOffset = 0;									// lowest temp value: 0C
-		let tempStep = 5;									// 5C step
-		let timeStep = svgWidth / dataSize;
-		let timeLineInterval = Math.ceil(dataSize / 32);	// 4 intervals (5 x 4 = 20 min)
-
+		let tempValueMul = (tempDiff >= 60) ? 3 : Math.round(svgHeight / (tempDiff + 20));	// 1°C = "tempValueMul"px
+		let tempMinimalValue = (tempMin > 10) ? tempMin - 10 : 0;
+		let tempAxisStep = (tempDiff >= 60) ? 6 : (tempDiff >= 30) ? 4 : 2;
+		let timeAxisStep = svgWidth / dataSize;
+		let timeAxisInterval = Math.ceil(dataSize / 32);
 		let svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
 			svg.setAttribute('width', '100%');
 			svg.setAttribute('height', '100%');
@@ -394,9 +419,9 @@ return L.view.extend({
 
 		for(let i = 0; i < dataSize; i++) {
 			tempPoints.push([
-				i * timeStep,
+				i * timeAxisStep,
 				(dataUnits[i][1] != null) ?
-					(svgHeight - (dataUnits[i][1] - tempOffset) * tempValueMul) :
+					(svgHeight - (dataUnits[i][1] - tempMinimalValue) * tempValueMul) :
 						svgHeight * 2
 			]);
 		};
@@ -407,36 +432,36 @@ return L.view.extend({
 		// temperature warning
 		let lineW = document.createElementNS('http://www.w3.org/2000/svg', 'line');
 			lineW.setAttribute('x1', 0);
-			lineW.setAttribute('y1', svgHeight - (this.diskTempWarning - tempOffset) * tempValueMul);
+			lineW.setAttribute('y1', svgHeight - (this.diskTempWarning - tempMinimalValue) * tempValueMul);
 			lineW.setAttribute('x2', '100%');
-			lineW.setAttribute('y2', svgHeight - (this.diskTempWarning - tempOffset) * tempValueMul);
+			lineW.setAttribute('y2', svgHeight - (this.diskTempWarning - tempMinimalValue) * tempValueMul);
 			lineW.setAttribute('style', 'stroke:orange; stroke-width:0.8');
 		svg.appendChild(lineW);
 
 		// temperature critical
 		let lineC = document.createElementNS('http://www.w3.org/2000/svg', 'line');
 			lineC.setAttribute('x1', 0);
-			lineC.setAttribute('y1', svgHeight - (this.diskTempCritical - tempOffset) * tempValueMul);
+			lineC.setAttribute('y1', svgHeight - (this.diskTempCritical - tempMinimalValue) * tempValueMul);
 			lineC.setAttribute('x2', '100%');
-			lineC.setAttribute('y2', svgHeight - (this.diskTempCritical - tempOffset) * tempValueMul);
+			lineC.setAttribute('y2', svgHeight - (this.diskTempCritical - tempMinimalValue) * tempValueMul);
 			lineC.setAttribute('style', 'stroke:red; stroke-width:0.7');
 		svg.appendChild(lineC);
 
 		// time labels
 		let j = 0;
-		for(let i = 0; i < svgWidth; i += timeStep * timeLineInterval) {
+		for(let i = 0; i < svgWidth; i += timeAxisStep * timeAxisInterval) {
 			let line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
 				line.setAttribute('x1', i);
 				line.setAttribute('y1', 0);
 				line.setAttribute('x2', i);
 				line.setAttribute('y2', '100%');
-				line.setAttribute('style', 'stroke:black; stroke-width:1; opacity:0.1');
+				line.setAttribute('style', 'stroke:rgba(122,122,122,0.2); stroke-width:1');
 			svg.appendChild(line);
 			let text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
 				text.setAttribute('x', i + 6);
 				text.setAttribute('y', 0);
 				text.setAttribute('style', 'fill:rgba(122,122,122,0.5); font-family:monospace; font-size:12px; font-weight:bold; writing-mode:vertical-rl');
-				if(i >= 2 * timeStep * timeLineInterval) {
+				if(i >= 2 * timeAxisStep * timeAxisInterval) {
 					text.appendChild(document.createTextNode('%02d.%02d %02d:%02d'.format(
 						dataUnits[j][2].getDate(),
 						dataUnits[j][2].getMonth() + 1,
@@ -444,7 +469,7 @@ return L.view.extend({
 						dataUnits[j][2].getMinutes()
 					)));
 				};
-				j += timeLineInterval;
+				j += timeAxisInterval;
 			svg.appendChild(text);
 			if(j >= dataSize) {
 				break;
@@ -453,24 +478,32 @@ return L.view.extend({
 
 		// temperature labels
 		let c = 0;
-		for(let i = svgHeight; i > 0; i -= tempValueMul * tempStep) {
+		for(let i = svgHeight; i > 0; i -= tempValueMul * tempAxisStep) {
 			let line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
 				line.setAttribute('x1', 0);
 				line.setAttribute('y1', i);
 				line.setAttribute('x2', '100%');
 				line.setAttribute('y2', i);
-				line.setAttribute('style', 'stroke:black; stroke-width:1; opacity:0.1');
+				line.setAttribute('style', 'stroke:rgba(122,122,122,0.2); stroke-width:1');
 			svg.appendChild(line);
 			let text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
 				text.setAttribute('x', 0);
 				text.setAttribute('y', i - 3);
 				text.setAttribute('style', 'fill:#eee; font-family:monospace; font-size:14px; text-shadow:1px 1px 1px #000');
 				if(c % 2 === 0) {
-					text.appendChild(document.createTextNode(((svgHeight - i) / tempValueMul) + tempOffset + ' °C'));
+					text.appendChild(document.createTextNode(((svgHeight - i) / tempValueMul) + tempMinimalValue + ' °C'));
 				};
 			svg.appendChild(text);
 			c++;
 		};
+
+		// temperature min/max, log interval
+		let text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+			text.setAttribute('x', svgWidth / 3);
+			text.setAttribute('y', svgHeight - 10);
+			text.setAttribute('style', 'fill:#eee; font-family:monospace; font-size:12px; text-shadow:1px 1px 1px #000');
+			text.appendChild(document.createTextNode(`Interval:${intervalMin}m Tmin:${tempMin}°C Tmax:${tempMax}°C`));
+		svg.appendChild(text);
 
 		// TABLE
 
@@ -487,13 +520,11 @@ return L.view.extend({
 		);
 
 		for(let [num, temp, date] of dataUnits) {
-			if(temp === null) {
-				continue;
-			};
+			if(temp === null) continue;
 			sctTempTable.append(
 				E('div', {
-					'class': (temp >= this.diskTempCritical) ? 'tr err' :
-						(temp >= this.diskTempWarning) ? 'tr warn' : 'tr',
+					'class': (temp >= this.diskTempCritical) ? 'tr disks-info-err' :
+						(temp >= this.diskTempWarning) ? 'tr disks-info-warn' : 'tr',
 				}, [
 					E('div', { 'class': 'td left', 'data-title': _('Index') },
 						num),
@@ -512,13 +543,15 @@ return L.view.extend({
 		};
 
 		let deviceNormalized = device.replace(/\//g, '-');
-		let loggingIntervalValue = E('select', {
+		let loggingIntervalValue = E('input', {
 			'id': 'logging_interval_value' + deviceNormalized,
+			'type': 'text',
+			'class': 'cbi-input-text',
 			'style': 'width:4em !important; min-width:4em !important',
+			'maxlength': 2,
+			'value': 1,
 		}, E('option', { 'value': '1' }, 1));
-		for(let i = 5; i <= 60 ; i += 5) {
-			loggingIntervalValue.append(E('option', { 'value': String(i) }, i));
-		};
+		ui.addValidator(loggingIntervalValue, 'range(1,99)', false)
 
 		return E([
 			E('div', { 'class': 'cbi-value' }, [
@@ -533,6 +566,7 @@ return L.view.extend({
 					sctTempTable
 				),
 			]),
+
 			E('div', { 'class': 'cbi-value' }, [
 				E('label', { 'class': 'cbi-value-title', 'for': 'logging_interval_value' + deviceNormalized },
 					_('Set logging interval') + ' (' + _('min') + ')'),
@@ -552,42 +586,16 @@ return L.view.extend({
 				E('label', { 'class': 'cbi-value-title' },
 					_('Write to device memory')
 				),
-				E('div', { 'class': 'cbi-value-field' },
+				E('div', { 'class': 'cbi-value-field' }, [
 					E('button', {
 						'class': 'btn cbi-button-apply important',
 						'click': ui.createHandlerFn(this, this.setSctTempLogInterval, device),
-					}, _('Apply'))
-				),
+					}, _('Apply')),
+				]),
 				E('hr'),
 			]),
-		]);
-	},
 
-	createSsdArea: function(ssdStatObject) {
-		let ssdPercEndurObj = ssdStatObject.table.find(e => e.offset == 8);
-		if(ssdPercEndurObj) {
-			return E('div', { 'class': 'cbi-value' }, [
-				E('h3', {}, _('SSD') + ':'),
-				E('div', { 'class': 'table' }, [
-					E('div', { 'class': 'tr' }, [
-						E('div', { 'class': 'td left', 'style':'min-width:33%' },
-							_('Percentage used endurance indicator') + ':'),
-						E('div', {
-								'class': (ssdPercEndurObj.value >= this.ssdEnduranceWarning) ?
-									'td left warn' : 'td left',
-							},
-							E('div', {
-								'class': 'cbi-progressbar',
-								'title': ssdPercEndurObj.value + '%',
-								'data-tooltip': _('May not be supported by some devices...'),
-							},
-								E('div', { 'style': 'width:' + ssdPercEndurObj.value + '%' })
-							)
-						),
-					]),
-				]),
-			]);
-		};
+		]);
 	},
 
 	createDeviceStatistics: function(statObject) {
@@ -595,14 +603,28 @@ return L.view.extend({
 			E('h3', {}, _('Device statistics') + ':')
 		);
 		for(let page of statObject.pages) {
-			if(page.number == 5 || page.number == 7) continue;
+			if(!Array.isArray(page.table) || page.table.length === 0) continue;
 			let pageTableTitle = E('h5', { 'style': 'width:100% !important; text-align:left !important' }, _(page.name));
 			let pageTable = E('div', { 'class': 'table' });
 			for(let entry of page.table) {
 				pageTable.append(
 					E('div', { 'class': 'tr' }, [
 						E('div', { 'class': 'td left', 'style':'min-width:33%' }, _(entry.name) + ':'),
-						E('div', { 'class': 'td left' }, entry.value),
+							(page.number === 7 && entry.offset === 8) ?
+								E('div', {
+										'class': (entry.value >= this.ssdEnduranceWarning) ?
+											'td left disks-info-warn' : 'td left',
+									},
+									E('div', {
+										'class': 'cbi-progressbar',
+										'title': entry.value + '%',
+										'data-tooltip': _('May not be supported by some devices...'),
+									},
+										E('div', { 'style': 'width:' + entry.value + '%' })
+									)
+								)
+							:
+								E('div', { 'class': 'td left' }, entry.value),
 					])
 				);
 			};
@@ -760,7 +782,9 @@ return L.view.extend({
 						this.diskTempWarning = smartObject.temperature && smartObject.temperature.op_limit_max || 60;
 						this.diskTempCritical = smartObject.temperature && smartObject.temperature.limit_max || 80;
 
-						if('smart_status' in smartObject && 'ata_smart_attributes' in smartObject) {
+						if('smart_status' in smartObject && 'ata_smart_attributes' in smartObject &&
+								Array.isArray(smartObject.ata_smart_attributes.table) &&
+								smartObject.ata_smart_attributes.table.length > 0) {
 							deviceTab.append(this.createSmartTable(smartObject));
 						};
 						if('ata_smart_error_log' in smartObject) {
@@ -771,18 +795,14 @@ return L.view.extend({
 						if('temperature' in smartObject) {
 							deviceTab.append(this.createTempTable(smartObject));
 						};
-						if('ata_sct_temperature_history' in smartObject) {
+						if('ata_sct_temperature_history' in smartObject &&
+								Array.isArray(smartObject.ata_sct_temperature_history.table) &&
+								smartObject.ata_sct_temperature_history.table.length > 0) {
 							deviceTab.append(this.createSctTempArea(smartObject));
 						};
-						if('ata_device_statistics' in smartObject) {
-							let ssdStatObject = smartObject.ata_device_statistics.pages.find(e => e.number == 7);
-
-							if(ssdStatObject) {
-								let ssdArea = this.createSsdArea(ssdStatObject);
-								if(ssdArea) {
-									deviceTab.append(ssdArea);
-								};
-							};
+						if('ata_device_statistics' in smartObject &&
+								Array.isArray(smartObject.ata_device_statistics.pages) &&
+								smartObject.ata_device_statistics.pages.length > 0) {
 							deviceTab.append(this.createDeviceStatistics(smartObject.ata_device_statistics));
 						};
 						if('device' in smartObject) {
@@ -797,8 +817,9 @@ return L.view.extend({
 		};
 
 		return E([
-			E('h2', { 'class': 'fade-in' }, _('Disks info')),
-			E('div', { 'class': 'cbi-section-descr fade-in' }),
+			E('h2', { 'class': 'fade-in' }, _('Disk devices')),
+			E('div', { 'class': 'cbi-section-descr fade-in' },
+				_("Information about the connected disk devices.")),
 			devicesNode,
 		]);
 	},

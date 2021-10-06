@@ -46,10 +46,13 @@ msgstr ""
 msgid "Disklabel type"
 msgstr ""
 
-msgid "Disks info"
+msgid "Disk devices"
 msgstr ""
 
 msgid "End"
+msgstr ""
+
+msgid "Error number"
 msgstr ""
 
 msgid "Estimated time"
@@ -83,6 +86,9 @@ msgid "In smartctl database [for details use: -P show]"
 msgstr ""
 
 msgid "Index"
+msgstr ""
+
+msgid "Information about the connected disk devices."
 msgstr ""
 
 msgid "LU WWN Device Id"
@@ -130,7 +136,7 @@ msgstr ""
 msgid "Partitions"
 msgstr ""
 
-msgid "Percentage used endurance indicator"
+msgid "Percentage Used Endurance Indicator"
 msgstr ""
 
 msgid "Preserve across power cycles"
@@ -187,13 +193,16 @@ msgstr ""
 msgid "Size"
 msgstr ""
 
-msgid "SSD"
+msgid "Solid State Device Statistics"
 msgstr ""
 
 msgid "Start"
 msgstr ""
 
 msgid "Temperature"
+msgstr ""
+
+msgid "Temperature Statistics"
 msgstr ""
 
 msgid "THRESH"
