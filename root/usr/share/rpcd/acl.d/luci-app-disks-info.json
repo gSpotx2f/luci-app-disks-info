@@ -5,7 +5,7 @@
 			"cgi-io": [ "exec" ],
 			"file": {
 				"/dev": [ "list" ],
-				"/bin/df -Th /dev/?d??": [ "exec" ],
+				"/bin/df -Th /dev/?d?[0-9]*": [ "exec" ],
 				"/usr/sbin/fdisk -l /dev/?d?": [ "exec" ],
 				"/usr/sbin/smartctl -iAHl scttemp -l error -l devstat --json=c /dev/?d?": [ "exec" ],
 				"/usr/sbin/smartctl -l scttempint,[0-9,p]* /dev/?d?": [ "exec" ]

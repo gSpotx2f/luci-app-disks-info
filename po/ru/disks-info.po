@@ -80,6 +80,9 @@ msgstr "Версия прошивки"
 msgid "Form Factor"
 msgstr "Форм фактор"
 
+msgid "Free-Fall Statistics"
+msgstr "Статистика падений"
+
 msgid "Gb"
 msgstr "Гб"
 
