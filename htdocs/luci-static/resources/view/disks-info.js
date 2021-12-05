@@ -1,6 +1,7 @@
 'use strict';
 'require fs';
 'require ui';
+'require view';
 
 document.head.append(E('style', {'type': 'text/css'},
 `
@@ -45,16 +46,16 @@ document.head.append(E('style', {'type': 'text/css'},
 }
 `));
 
-return L.view.extend({
-	fsSpaceWarning: 90,
+return view.extend({
+	fsSpaceWarning     : 90,
 
 	ssdEnduranceWarning: 95,
 
-	smartCriticalAttrs: [ 5, 11, 183, 184, 187, 196, 197, 198, 200, 202, 220 ],
+	smartCriticalAttrs : [ 5, 11, 183, 184, 187, 196, 197, 198, 200, 202, 220 ],
 
-	smartTempAttrs: [ 190, 194 ],
+	smartTempAttrs     : [ 190, 194 ],
 
-	deviceRegExp: new RegExp('^(h|s)d[a-z]$'),
+	deviceRegExp       : new RegExp('^(h|s)d[a-z]$'),
 
 	getDeviceData: function(device) {
 		return Promise.all([
@@ -69,7 +70,7 @@ return L.view.extend({
 
 	setSctTempLogInterval: function(device) {
 		let deviceNormalized = device.replace(/\//g, '-');
-		let num = document.getElementById('logging_interval_value' + deviceNormalized).value;
+		let num   = document.getElementById('logging_interval_value' + deviceNormalized).value;
 		let pSave = document.getElementById('logging_interval_type' + deviceNormalized).checked;
 
 		if(/^[0-9]{1,2}$/.test(num) && Number(num) > 0) {
@@ -372,20 +373,20 @@ return L.view.extend({
 	},
 
 	createSctTempArea: function(smartObject) {
-		let device = smartObject.device.name;
-		let deviceTime = smartObject.local_time.time_t;
+		let device      = smartObject.device.name;
+		let deviceTime  = smartObject.local_time.time_t;
 		let intervalMin = smartObject.ata_sct_temperature_history.logging_interval_minutes;
 		let intervalSec = intervalMin * 60;
-		let dataSize = smartObject.ata_sct_temperature_history.size;
-		let tempData = smartObject.ata_sct_temperature_history.table;
-		let dataUnits = [];
-		let tempMin = tempData.reduce(
+		let dataSize    = smartObject.ata_sct_temperature_history.size;
+		let tempData    = smartObject.ata_sct_temperature_history.table;
+		let dataUnits   = [];
+		let tempMin     = tempData.reduce(
 			(min, current) => (current < min && current !== null) ? current : min,
 			Infinity);
-		let tempMax = tempData.reduce(
+		let tempMax     = tempData.reduce(
 			(max, current) => (current > max && current !== null) ? current : max,
 			-Infinity);
-		let tempDiff = tempMax - tempMin;
+		let tempDiff    = tempMax - tempMin;
 
 		let i = dataSize - 1;
 		while(i >= 0) {
@@ -399,13 +400,14 @@ return L.view.extend({
 
 		// GRAPH
 
-		let svgWidth = 900;
-		let svgHeight = 300;
-		let tempValueMul = (tempDiff >= 60) ? 3 : Math.round(svgHeight / (tempDiff + 20));	// 1°C = "tempValueMul"px
+		let svgWidth         = 900;
+		let svgHeight        = 300;
+		let tempValueMul     = (tempDiff >= 60) ? 3 : Math.round(svgHeight / (tempDiff + 20));	// 1°C = "tempValueMul"px
 		let tempMinimalValue = (tempMin > 10) ? tempMin - 10 : 0;
-		let tempAxisStep = (tempDiff >= 60) ? 6 : (tempDiff >= 30) ? 4 : 2;
-		let timeAxisStep = svgWidth / dataSize;
+		let tempAxisStep     = (tempDiff >= 60) ? 6 : (tempDiff >= 30) ? 4 : 2;
+		let timeAxisStep     = svgWidth / dataSize;
 		let timeAxisInterval = Math.ceil(dataSize / 32);
+
 		let svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
 			svg.setAttribute('width', '100%');
 			svg.setAttribute('height', '100%');
@@ -413,7 +415,7 @@ return L.view.extend({
 			svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
 
 		// temperature line
-		let tempLine = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+		let tempLine   = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
 			tempLine.setAttribute('style', 'fill:#ADD3E6; fill-opacity:1; stroke:#006282; stroke-width:1');
 		let tempPoints = [[0, svgHeight]];
 
@@ -542,7 +544,7 @@ return L.view.extend({
 			);
 		};
 
-		let deviceNormalized = device.replace(/\//g, '-');
+		let deviceNormalized     = device.replace(/\//g, '-');
 		let loggingIntervalValue = E('input', {
 			'id': 'logging_interval_value' + deviceNormalized,
 			'type': 'text',
@@ -759,10 +761,10 @@ return L.view.extend({
 
 				for(let i = 0; i < data.length; i++) {
 					let deviceName = data[i][0];
-					let fdisk = (data[i][1] && data[i][1].code === 0) ? data[i][1].stdout : null;
-					let smart = data[i][2];
+					let fdisk      = (data[i][1] && data[i][1].code === 0) ? data[i][1].stdout : null;
+					let smart      = data[i][2];
 
-					let deviceTab = E('div', {
+					let deviceTab  = E('div', {
 						'data-tab': i,
 						'data-tab-title': deviceName,
 					});
@@ -779,7 +781,7 @@ return L.view.extend({
 							smartObject = JSON.parse(smart);
 						} catch(err) {};
 
-						this.diskTempWarning = smartObject.temperature && smartObject.temperature.op_limit_max || 60;
+						this.diskTempWarning  = smartObject.temperature && smartObject.temperature.op_limit_max || 60;
 						this.diskTempCritical = smartObject.temperature && smartObject.temperature.limit_max || 80;
 
 						if('smart_status' in smartObject && 'ata_smart_attributes' in smartObject &&
@@ -825,6 +827,6 @@ return L.view.extend({
 	},
 
 	handleSaveApply: null,
-	handleSave: null,
-	handleReset: null,
+	handleSave     : null,
+	handleReset    : null,
 });
