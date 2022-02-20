@@ -578,10 +578,13 @@ return view.extend({
 				E('label', { 'class': 'cbi-value-title', 'for': 'logging_interval_type' + deviceNormalized },
 					_('Preserve across power cycles')),
 				E('div', { 'class': 'cbi-value-field' },
-					E('input', {
-						'type': 'checkbox',
-						'id'  : 'logging_interval_type' + deviceNormalized,
-					})
+					E('div', { 'class': 'cbi-checkbox' }, [
+						E('input', {
+							'type': 'checkbox',
+							'id'  : 'logging_interval_type' + deviceNormalized,
+						}),
+						E('label', {})
+					])
 				),
 			]),
 			E('div', { 'class': 'cbi-value' }, [

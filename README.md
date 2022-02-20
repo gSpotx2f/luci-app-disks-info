@@ -3,6 +3,8 @@ Information about connected disk devices (partitions, filesystems, SMART) for Lu
 
 OpenWrt >= 19.07.
 
+Dependences: fdisk, smartmontools, smartmontools-drivedb.
+
 ## Installation notes
 
 **OpenWrt >= 21.02:**
