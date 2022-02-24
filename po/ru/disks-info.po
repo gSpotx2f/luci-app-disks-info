@@ -56,7 +56,7 @@ msgstr "Идентификатор диска"
 msgid "Disklabel type"
 msgstr "Тип разметки диска"
 
-msgid "Disk devices"
+msgid "Disk Devices"
 msgstr "Дисковые устройства"
 
 msgid "End"

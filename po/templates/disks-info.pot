@@ -46,7 +46,7 @@ msgstr ""
 msgid "Disklabel type"
 msgstr ""
 
-msgid "Disk devices"
+msgid "Disk Devices"
 msgstr ""
 
 msgid "End"

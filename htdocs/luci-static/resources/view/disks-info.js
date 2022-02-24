@@ -822,7 +822,7 @@ return view.extend({
 		};
 
 		return E([
-			E('h2', { 'class': 'fade-in' }, _('Disk devices')),
+			E('h2', { 'class': 'fade-in' }, _('Disk Devices')),
 			E('div', { 'class': 'cbi-section-descr fade-in' },
 				_("Information about the connected disk devices.")),
 			devicesNode,

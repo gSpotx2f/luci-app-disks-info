@@ -1,6 +1,6 @@
 {
 	"admin/services/disks-info": {
-		"title": "Disk devices",
+		"title": "Disk Devices",
 		"order": 10,
 		"action": {
 			"type": "view",
