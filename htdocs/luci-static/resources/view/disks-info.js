@@ -588,7 +588,7 @@ return view.extend({
 				),
 			]),
 			E('div', { 'class': 'cbi-value' }, [
-				E('label', { 'class': 'cbi-value-title' },
+				E('label', { 'class': 'cbi-value-title', 'for': 'apply_interval_value' + deviceNormalized },
 					_('Write to device memory')
 				),
 				E('div', { 'class': 'cbi-value-field' }, [
@@ -596,6 +596,10 @@ return view.extend({
 						'class': 'btn cbi-button-apply important',
 						'click': ui.createHandlerFn(this, this.setSctTempLogInterval, device),
 					}, _('Apply')),
+					E('input', {
+						'id'   : 'apply_interval_value' + deviceNormalized,
+						'type': 'hidden',
+					}),
 				]),
 				E('hr'),
 			]),
