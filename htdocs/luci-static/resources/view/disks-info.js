@@ -55,7 +55,7 @@ return view.extend({
 
 	smartTempAttrs     : [ 190, 194 ],
 
-	deviceRegExp       : new RegExp('^(h|s)d[a-z]$'),
+	deviceRegExp       : new RegExp('^((h|s)d[a-z]|nvme[0-9]+n[0-9]+)$'),
 
 	getDeviceData: function(device) {
 		return Promise.all([
