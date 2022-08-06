@@ -9,6 +9,7 @@ Dependences: fdisk, smartmontools, smartmontools-drivedb.
 
 **OpenWrt >= 21.02:**
 
+    opkg update
     wget --no-check-certificate -O /tmp/luci-app-disks-info_0.4-0_all.ipk https://github.com/gSpotx2f/packages-openwrt/raw/master/current/luci-app-disks-info_0.4-0_all.ipk
     opkg install /tmp/luci-app-disks-info_0.4-0_all.ipk
     rm /tmp/luci-app-disks-info_0.4-0_all.ipk
@@ -22,6 +23,7 @@ i18n-ru:
 
 **OpenWrt 19.07:**
 
+    opkg update
     wget --no-check-certificate -O /tmp/luci-app-disks-info_0.3-7_all.ipk https://github.com/gSpotx2f/packages-openwrt/raw/master/19.07/luci-app-disks-info_0.3-7_all.ipk
     opkg install /tmp/luci-app-disks-info_0.3-7_all.ipk
     rm /tmp/luci-app-disks-info_0.3-7_all.ipk
