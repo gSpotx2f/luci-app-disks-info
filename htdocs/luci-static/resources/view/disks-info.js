@@ -546,14 +546,15 @@ return view.extend({
 
 		let deviceNormalized     = device.replace(/\//g, '-');
 		let loggingIntervalValue = E('input', {
-			'id'       : 'logging_interval_value' + deviceNormalized,
-			'type'     : 'text',
-			'class'    : 'cbi-input-text',
-			'style'    : 'width:4em !important; min-width:4em !important',
-			'maxlength': 2,
-			'value'    : 1,
-		}, E('option', { 'value': '1' }, 1));
-		ui.addValidator(loggingIntervalValue, 'range(1,99)', false)
+			'id'          : 'logging_interval_value' + deviceNormalized,
+			'type'        : 'text',
+			'class'       : 'cbi-input-text',
+			'style'       : 'width:4em !important; min-width:4em !important',
+			'maxlength'   : 4,
+			'value'       : 1,
+			'placeholder' : '1-1440',
+		});
+		ui.addValidator(loggingIntervalValue, 'range(1,1440)', false)
 
 		return E([
 			E('div', { 'class': 'cbi-value' }, [
