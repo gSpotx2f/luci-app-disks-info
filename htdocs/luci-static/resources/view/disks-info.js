@@ -8,6 +8,16 @@ document.head.append(E('style', {'type': 'text/css'},
 :root {
 	--app-disks-info-dark-font-color: #2e2e2e;
 	--app-disks-info-light-font-color: #fff;
+	--app-disks-info-ok-color: #2ea256;
+	--app-disks-info-warn-color: #fff7e2;
+	--app-disks-info-err-color: #ff4e54;
+}
+:root[data-darkmode="true"] {
+	--app-disks-info-dark-font-color: #fff;
+	--app-disks-info-light-font-color: #fff;
+	--app-disks-info-ok-color: #2ea256;
+	--app-disks-info-warn-color: #8d7000;
+	--app-disks-info-err-color: #a93734;
 }
 .disks-info-label-status {
 	display: inline;
@@ -21,11 +31,11 @@ document.head.append(E('style', {'type': 'text/css'},
 	line-height: 1.6em;
 }
 .disks-info-ok {
-	background-color: #2ea256 !important;
+	background-color: var(--app-disks-info-ok-color) !important;
 	color: var(--app-disks-info-light-font-color) !important;
 }
 .disks-info-warn {
-	background-color: #fff7e2 !important;
+	background-color: var(--app-disks-info-warn-color) !important;
 	color: var(--app-disks-info-dark-font-color) !important;
 }
 .disks-info-warn .td {
@@ -35,7 +45,7 @@ document.head.append(E('style', {'type': 'text/css'},
 	color: var(--app-disks-info-dark-font-color) !important;
 }
 .disks-info-err {
-	background-color: #ff4e54 !important;
+	background-color: var(--app-disks-info-err-color) !important;
 	color: var(--app-disks-info-light-font-color) !important;
 }
 .disks-info-err .td {
