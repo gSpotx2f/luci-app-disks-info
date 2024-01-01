@@ -564,7 +564,7 @@ return view.extend({
 			'value'       : 1,
 			'placeholder' : '1-1440',
 		});
-		ui.addValidator(loggingIntervalValue, 'range(1,1440)', false)
+		ui.addValidator(loggingIntervalValue, 'range(1,1440)', false);
 
 		return E([
 			E('div', { 'class': 'cbi-value' }, [

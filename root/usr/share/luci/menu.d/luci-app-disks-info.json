@@ -1,7 +1,7 @@
 {
-	"admin/services/disks-info": {
+	"admin/status/disks-info": {
 		"title": "Disk Devices",
-		"order": 10,
+		"order": 90,
 		"action": {
 			"type": "view",
 			"path": "disks-info"
