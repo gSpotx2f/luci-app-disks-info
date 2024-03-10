@@ -112,16 +112,16 @@ msgid "Lifetime hours"
 msgstr "生命小时数"
 
 msgid "Lifetime max"
-msgstr "生命周期最大值"
+msgstr "历史最高温"
 
 msgid "Lifetime min"
-msgstr "生命周期最小值"
+msgstr "历史最低温"
 
 msgid "Limit max"
-msgstr "最大限制"
+msgstr "上限温度"
 
 msgid "Limit min"
-msgstr "限制分钟"
+msgstr "下限温度"
 
 msgid "Local Time is"
 msgstr "当前时间"
@@ -160,10 +160,10 @@ msgid "RAW"
 msgstr "原始值"
 
 msgid "Recommended max"
-msgstr "最大允许值"
+msgstr "推荐最高温度"
 
 msgid "Recommended min"
-msgstr "最小允许值"
+msgstr "推荐最低温度"
 
 msgid "Refresh devices"
 msgstr "重新加载设备信息"
@@ -272,3 +272,78 @@ msgstr "分钟"
 
 msgid "passed"
 msgstr "通过"
+
+msgid "I/O size (minimum/optimal)"
+msgstr "I/O 大小 (最小/最优)"
+
+msgid "Number of Hardware Resets"
+msgstr "硬件复位计数"
+
+msgid "Number of Interface CRC Errors"
+msgstr "接口CRC错误计数"
+
+msgid "Lifetime Power-On Resets"
+msgstr "上电复位计数"
+
+msgid "Power-on Hours"
+msgstr "通电小时"
+
+msgid "Logical Sectors Written"
+msgstr "逻辑扇区写计数"
+
+msgid "Number of Write Commands"
+msgstr "命令写计数"
+
+msgid "Logical Sectors Read"
+msgstr "逻辑扇区读计数"
+
+msgid "Number of Read Commands"
+msgstr "命令读计数"
+
+msgid "Number of Reported Uncorrectable Errors"
+msgstr "无法修复的错误计数"
+
+msgid "Resets Between Cmd Acceptance and Completion"
+msgstr "命令接收与完成之间的复位计数"
+
+msgid "Current Temperature"
+msgstr "当前温度"
+
+msgid "Average Short Term Temperature"
+msgstr "短期平均温度"
+
+msgid "Average Long Term Temperature"
+msgstr "长期平均温度"
+
+msgid "Highest Temperature"
+msgstr "最高温度"
+
+msgid "Lowest Temperature"
+msgstr "最低温度"
+
+msgid "Highest Average Short Term Temperature"
+msgstr "短期最高平均温度"
+
+msgid "Lowest Average Short Term Temperature"
+msgstr "短期最低平均温度"
+
+msgid "Highest Average Long Term Temperature"
+msgstr "长期最高平均温度"
+
+msgid "Lowest Average Long Term Temperature"
+msgstr "长期最低平均温度"
+
+msgid "Time in Over-Temperature"
+msgstr "超温时间"
+
+msgid "Specified Maximum Operating Temperature"
+msgstr "推荐最高工作温度"
+
+msgid "Time in Under-Temperature"
+msgstr "低温时间"
+
+msgid "Specified Minimum Operating Temperature"
+msgstr "推荐最低工作温度"
+
+msgid "Solid State Device"
+msgstr "固态硬盘"
