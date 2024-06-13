@@ -1,12 +1,12 @@
 #
-# Copyright (C) 2020 gSpot (https://github.com/gSpotx2f/luci-app-disks-info)
+# Copyright (C) 2024 gSpot (https://github.com/gSpotx2f/luci-app-disks-info)
 #
 # This is free software, licensed under the MIT License.
 #
 
 include $(TOPDIR)/rules.mk
 
-PKG_VERSION:=0.4-3
+PKG_VERSION:=0.4.0-r3
 LUCI_TITLE:=Information about connected disk devices (partitions, filesystems, SMART).
 LUCI_DEPENDS:=+fdisk +smartmontools +smartmontools-drivedb
 LUCI_PKGARCH:=all
