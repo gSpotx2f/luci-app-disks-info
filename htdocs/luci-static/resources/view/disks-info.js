@@ -67,7 +67,7 @@ return view.extend({
 
 	deviceRegExp       : new RegExp('^((h|s)d[a-z]|nvme[0-9]+n[0-9]+)$'),
 
-	getDeviceData: function(device) {
+	getDeviceData(device) {
 		return Promise.all([
 			device,
 			L.resolveDefault(fs.exec('/usr/sbin/fdisk', [ '-l', device ]), null),
@@ -78,7 +78,7 @@ return view.extend({
 		]);
 	},
 
-	setSctTempLogInterval: function(device) {
+	setSctTempLogInterval(device) {
 		let deviceNormalized = device.replace(/\//g, '-');
 		let num   = document.getElementById('logging_interval_value' + deviceNormalized).value;
 		let pSave = document.getElementById('logging_interval_type' + deviceNormalized).checked;
@@ -96,7 +96,7 @@ return view.extend({
 		}).catch(e => ui.addNotification(null, E('p', {}, e.message)));
 	},
 
-	createDiskTable: async function(text) {
+	async createDiskTable(text) {
 		let [ diskInfo, partitions ] = text.trim().split('\n\n').map(e => e.trim().split('\n'));
 		diskInfo = diskInfo.map(e => e.split(':'));
 
@@ -244,7 +244,7 @@ return view.extend({
 		]);
 	},
 
-	createSmartTable: function(smartObject) {
+	createSmartTable(smartObject) {
 		let smartStatusLabel = (smartObject.smart_status.passed) ?
 			E('span', { 'class': 'disks-info-label-status disks-info-ok' }, _('passed')) :
 			E('span', { 'class': 'disks-info-label-status disks-info-err' }, _('failed'));
@@ -310,7 +310,7 @@ return view.extend({
 		]);
 	},
 
-	createErrorLog: function(table) {
+	createErrorLog(table) {
 		let errorLogTable = E('table', { 'class': 'table' },
 			E('tr', { 'class': 'tr table-titles' }, [
 				E('th', { 'class': 'th left', 'style':'min-width:16%' }, _('Error number')),
@@ -335,7 +335,7 @@ return view.extend({
 		]);
 	},
 
-	createTempTable: function(smartObject) {
+	createTempTable(smartObject) {
 		return E('div', { 'class': 'cbi-value' }, [
 			E('h3', {}, _('Temperature') + ':'),
 			E('table', { 'class': 'table' }, [
@@ -382,7 +382,7 @@ return view.extend({
 		]);
 	},
 
-	createSctTempArea: function(smartObject) {
+	createSctTempArea(smartObject) {
 		let device      = smartObject.device.name;
 		let deviceTime  = smartObject.local_time.time_t;
 		let intervalMin = smartObject.ata_sct_temperature_history.logging_interval_minutes;
@@ -408,7 +408,7 @@ return view.extend({
 		};
 		dataUnits.reverse();
 
-		// GRAPH
+		/* GRAPH */
 
 		let svgWidth         = 900;
 		let svgHeight        = 300;
@@ -517,7 +517,7 @@ return view.extend({
 			text.appendChild(document.createTextNode(`Interval:${intervalMin}m Tmin:${tempMin}°C Tmax:${tempMax}°C`));
 		svg.appendChild(text);
 
-		// TABLE
+		/* TABLE */
 
 		dataUnits = dataUnits.filter((e, i, a) => {
 			return e[1] != ((a[i - 1] !== undefined) && a[i - 1][1]);
@@ -618,12 +618,12 @@ return view.extend({
 		]);
 	},
 
-	createDeviceStatistics: function(statObject) {
+	createDeviceStatistics(statObject) {
 		let statsArea = E('div', { 'class': 'cbi-value' },
 			E('h3', {}, _('Device statistics') + ':')
 		);
 		for(let page of statObject.pages) {
-			if(!Array.isArray(page.table) || page.table.length === 0) continue;
+			if(!page || !Array.isArray(page.table) || page.table.length === 0) continue;
 			let pageTableTitle = E('h5', { 'style': 'width:100% !important; text-align:left !important' }, _(page.name));
 			let pageTable = E('table', { 'class': 'table' });
 			for(let entry of page.table) {
@@ -654,7 +654,7 @@ return view.extend({
 		return statsArea;
 	},
 
-	createDeviceTable: function(smartObject) {
+	createDeviceTable(smartObject) {
 		return E('div', { 'class': 'cbi-value' }, [
 			E('h3', {}, _('Device') + ':'),
 			E('table', { 'class': 'table' }, [
@@ -727,7 +727,7 @@ return view.extend({
 		]);
 	},
 
-	load: function() {
+	load() {
 		return fs.list('/dev').then(stat => {
 			let devices = [];
 			stat.forEach(e => {
@@ -740,7 +740,7 @@ return view.extend({
 		}).catch(e => ui.addNotification(null, E('p', {}, e.message)));
 	},
 
-	render: function(devices) {
+	render(devices) {
 		let devicesNode = E('div', { 'class': 'cbi-section fade-in' },
 			E('div', { 'class': 'cbi-section-node' },
 				E('div', { 'class': 'cbi-value' },
