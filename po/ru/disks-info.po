@@ -78,7 +78,7 @@ msgid "Firmware Version"
 msgstr "Версия прошивки"
 
 msgid "Form Factor"
-msgstr "Форм фактор"
+msgstr "Форм-фактор"
 
 msgid "Free-Fall Statistics"
 msgstr "Статистика падений"
@@ -87,10 +87,10 @@ msgid "Gb"
 msgstr "Гб"
 
 msgid "General Statistics"
-msgstr "Общая Статистика"
+msgstr "Общая статистика"
 
 msgid "General Errors Statistics"
-msgstr "Общая Статистика Ошибок"
+msgstr "Общая статистика ошибок"
 
 msgid "Id"
 msgstr ""
@@ -108,7 +108,7 @@ msgid "LU WWN Device Id"
 msgstr ""
 
 msgid "Lifetime hours"
-msgstr "Час наработки"
+msgstr "Часов наработки"
 
 msgid "Lifetime max"
 msgstr "Максимальная за время работы"
@@ -150,7 +150,7 @@ msgid "Partitions"
 msgstr "Разделы"
 
 msgid "Percentage Used Endurance Indicator"
-msgstr "Процентный Индикатор Износа"
+msgstr "Процентный индикатор износа"
 
 msgid "Preserve across power cycles"
 msgstr "Сохранить при выключении питания"
@@ -168,7 +168,7 @@ msgid "Refresh devices"
 msgstr "Обновить устройства"
 
 msgid "Rotating Media Statistics"
-msgstr "Статистика Механической Части"
+msgstr "Статистика механической части"
 
 msgid "Rotation Rate"
 msgstr "Скорость вращения"
@@ -216,13 +216,13 @@ msgid "Temperature"
 msgstr "Температура"
 
 msgid "Temperature Statistics"
-msgstr "Статистика Температуры"
+msgstr "Статистика температуры"
 
 msgid "THRESH"
 msgstr ""
 
 msgid "Transport Statistics"
-msgstr "Статистика Транспорта"
+msgstr "Статистика транспорта"
 
 msgid "Type"
 msgstr "Тип"
