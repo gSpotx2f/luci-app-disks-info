@@ -608,7 +608,7 @@ return view.extend({
 						'click': ui.createHandlerFn(this, this.setSctTempLogInterval, device),
 					}, _('Apply'))),
 					E('input', {
-						'id'   : 'apply_interval_value' + deviceNormalized,
+						'id'  : 'apply_interval_value' + deviceNormalized,
 						'type': 'hidden',
 					}),
 				]),
