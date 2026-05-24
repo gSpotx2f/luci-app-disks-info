@@ -1,7 +1,7 @@
 # luci-app-disks-info
 Status of connected disk devices (partitions, filesystems, SMART) for LuCI (OpenWrt webUI).
 
-OpenWrt >= 21.02.
+OpenWrt >= 22.03.
 
 **Dependences:** ucode, ucode-mod-fs, fdisk, smartmontools, smartmontools-drivedb.
 
