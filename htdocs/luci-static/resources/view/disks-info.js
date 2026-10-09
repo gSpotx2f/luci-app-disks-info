@@ -190,7 +190,7 @@ return view.extend({
 			[ '-l', 'scttempint,' + (pSave ? num + ',p' : num), device ]
 		).then(res => {
 			window.location.reload();
-		}).catch(e => ui.addNotification(null, E('p', {}, e.message)));
+		}).catch(e => ui.addNotification(null, E('p', {}, e.message), 'warning'));
 	},
 
 	createDiskTable(fdiskData, dfData) {
@@ -983,7 +983,7 @@ return view.extend({
 
 				ui.tabs.initTabGroup(tabsContainer.children);
 				devicesNode.replaceWith(devicesTabs);
-			}).catch(e => ui.addNotification(null, E('p', {}, e.message)));
+			}).catch(e => ui.addNotification(null, E('p', {}, e.message), 'warning'));
 		};
 
 		return E([

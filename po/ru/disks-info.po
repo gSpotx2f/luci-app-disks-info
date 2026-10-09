@@ -281,5 +281,5 @@ msgstr "нет"
 msgid "passed"
 msgstr "пройден"
 
-msgid "да"
-msgstr ""
+msgid "yes"
+msgstr "да"
