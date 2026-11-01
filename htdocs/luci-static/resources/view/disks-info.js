@@ -293,55 +293,58 @@ return view.extend({
 			};
 			if(partitionsTable.children.length <= 1) {
 				partitionsTable.append(partitionsTablePlaceholder);
-			} else if(dfData) {
-				for(let i of dfData) {
-					dfTable.append(
-						E('tr', { 'class': 'tr' }, [
-							E('td', {
-								'class'     : 'td left',
-								'data-title': dfTableTitles[0],
-							}, i.filesystem),
-							E('td', {
-								'class'     : 'td left',
-								'data-title': dfTableTitles[1],
-							}, i.type),
-							E('td', {
-								'class'     : 'td left',
-								'data-title': dfTableTitles[2],
-							}, i.size),
-							E('td', {
-								'class'     : 'td left',
-								'data-title': dfTableTitles[3],
-							}, i.used),
-							E('td', {
-								'class'     : 'td left',
-								'data-title': dfTableTitles[4],
-							}, i.available),
-							E('td', {
-								'class': (parseInt(i.use_perc) >= this.fsSpaceWarning) ?
-									'td left disks-info-warn' : 'td left',
-								'data-title': dfTableTitles[5],
-							}, E('div', {
-								'class': 'cbi-progressbar',
-								'title': i.use_perc,
-								'style': 'min-width:8em !important',
-								},
-									E('div', { 'style': 'width:' + i.use_perc })
-								)
-							),
-							E('td', {
-								'class'     : 'td left',
-								'data-title': dfTableTitles[6],
-							}, i.mounted),
-						]),
-					);
-				};
-				if(dfTable.children.length <= 1) {
-					dfTable.append(dfTablePlaceholder);
-				};
 			};
 		} else {
 			partitionsTable.append(partitionsTablePlaceholder);
+		};
+
+		if(dfData) {
+			for(let i of dfData) {
+				dfTable.append(
+					E('tr', { 'class': 'tr' }, [
+						E('td', {
+							'class'     : 'td left',
+							'data-title': dfTableTitles[0],
+						}, i.filesystem),
+						E('td', {
+							'class'     : 'td left',
+							'data-title': dfTableTitles[1],
+						}, i.type),
+						E('td', {
+							'class'     : 'td left',
+							'data-title': dfTableTitles[2],
+						}, i.size),
+						E('td', {
+							'class'     : 'td left',
+							'data-title': dfTableTitles[3],
+						}, i.used),
+						E('td', {
+							'class'     : 'td left',
+							'data-title': dfTableTitles[4],
+						}, i.available),
+						E('td', {
+							'class': (parseInt(i.use_perc) >= this.fsSpaceWarning) ?
+								'td left disks-info-warn' : 'td left',
+							'data-title': dfTableTitles[5],
+						}, E('div', {
+							'class': 'cbi-progressbar',
+							'title': i.use_perc,
+							'style': 'min-width:8em !important',
+							},
+								E('div', { 'style': 'width:' + i.use_perc })
+							)
+						),
+						E('td', {
+							'class'     : 'td left',
+							'data-title': dfTableTitles[6],
+						}, i.mounted),
+					]),
+				);
+			};
+			if(dfTable.children.length <= 1) {
+				dfTable.append(dfTablePlaceholder);
+			};
+		} else {
 			dfTable.append(dfTablePlaceholder);
 		};
 
