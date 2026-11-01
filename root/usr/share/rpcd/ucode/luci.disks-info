@@ -1,10 +1,10 @@
 
 'use strict';
 
-import { lsdir, popen } from 'fs';
+import { basename, dirname, lsdir, popen, readfile, readlink, stat } from 'fs';
 
 const fdiskPattern = '/usr/sbin/fdisk -lo Device,Start,End,Sectors,Size,Type %s 2> /dev/null';
-const dfPattern    = '/bin/df -Th %s 2> /dev/null';
+const dfPattern    = '/bin/df -PTh %s 2> /dev/null';
 const deviceRegexp = /^((h|s)d[a-z]|nvme[0-9]+n[0-9]+)$/;
 const devicesDir   = '/dev';
 
@@ -79,22 +79,100 @@ function getFdiskData(device) {
 	return diskDict;
 }
 
-function getDfData(partition) {
+function unescapeMountPath(path) {
+	return replace(path, /\\(040|011|012|134)/g,
+		(_, octal) => sprintf('%c', int(octal, 8)));
+}
+
+function getSourceDevice(source) {
+	let info = stat(source);
+	if(!info || info.type != 'block') {
+		return '';
+	}
+	// Resolve aliases using APIs available in OpenWrt 22.03's ucode.
+	for(let i = 0; i < 40; i++) {
+		let target = readlink(source);
+		if(target == null) {
+			return trim(readfile('/sys/class/block/' + basename(source) + '/dev') ?? '');
+		}
+		source = (substr(target, 0, 1) == '/' ? '' : dirname(source) + '/') + target;
+	}
+	return '';
+}
+
+function getMounts() {
+	let mounts = [];
+	for(let line in split(readfile('/proc/self/mountinfo') ?? '', '\n')) {
+		let fields = split(line, ' - ', 2);
+		if(length(fields) != 2) {
+			continue;
+		}
+		let info = split(fields[0], ' ');
+		let fs = split(fields[1], ' ');
+		let filesystem = unescapeMountPath(fs[1]);
+		// Btrfs subvolumes report an anonymous device number in mountinfo.
+		let sourceDevice = match(info[2], /^0:/) ? getSourceDevice(filesystem) : '';
+		push(mounts, {
+			device: info[2],
+			sourceDevice,
+			mounted: unescapeMountPath(info[4]),
+			type: fs[0],
+			filesystem,
+		});
+	}
+	return mounts;
+}
+
+function getBlockDevices(device, devices) {
+	let path = '/sys/class/block/' + device;
+	let id = trim(readfile(path + '/dev') ?? '');
+	if(!id || devices[id]) {
+		return;
+	}
+	devices[id] = true;
+
+	// Follow consumers, e.g. sda3 -> md2 -> dm-0, without visiting siblings.
+	for(let holder in lsdir(path + '/holders') ?? []) {
+		getBlockDevices(holder, devices);
+	}
+	// Whole disks and arrays may both contain partitions.
+	for(let child in lsdir(path) ?? []) {
+		if(readfile(path + '/' + child + '/partition') != null) {
+			getBlockDevices(child, devices);
+		}
+	}
+}
+
+function isCurrentMount(mount) {
+	let info = stat(mount.mounted);
+	return info && sprintf('%d:%d', info.dev.major, info.dev.minor) == mount.device;
+}
+
+function getDfData(mount) {
 	let fsDict = {};
-	let output = getCmdOutput(sprintf(dfPattern, partition));
+	// A mount may be hidden or removed after reading mountinfo.
+	if(!isCurrentMount(mount)) {
+		return fsDict;
+	}
+	let quotedPath = "'" + replace(mount.mounted, /'/g, "'\\''") + "'";
+	let output = getCmdOutput(sprintf(dfPattern, quotedPath));
+	if(!isCurrentMount(mount)) {
+		return fsDict;
+	}
 	let fsData = map(
 		split(trim(output), '\n'),
 		e => trim(e)
 	);
-	if(fsData[1]) {
-		let dataRaw = split(fsData[1], /\s+/);
-		fsDict['filesystem'] = dataRaw[0];
-		fsDict['type']       = dataRaw[1];
-		fsDict['size']       = dataRaw[2];
-		fsDict['used']       = dataRaw[3];
-		fsDict['available']  = dataRaw[4];
-		fsDict['use_perc']   = dataRaw[5];
-		fsDict['mounted']    = dataRaw[6];
+	// Match the usage columns even when the filesystem name contains spaces.
+	let stats = match(fsData[1] ?? '', /\s+\S+\s+(\S+)\s+(\S+)\s+(\S+)\s+([0-9]+%)[ \t]+\//);
+	if(stats) {
+		fsDict['filesystem'] = mount.filesystem;
+		fsDict['type']       = mount.type;
+		fsDict['size']       = stats[1];
+		fsDict['used']       = stats[2];
+		fsDict['available']  = stats[3];
+		fsDict['use_perc']   = stats[4];
+		fsDict['mounted']    = mount.mounted;
 	}
 	return fsDict;
 }
@@ -110,10 +188,21 @@ const methods = {
 					fdiskData[i] = getFdiskData(i);
 				}
 				let dfData = {};
-				for(let k, v in fdiskData) {
+				let mounts = getMounts();
+				let dfCache = {};
+				for(let k in fdiskData) {
 					let filesystems = [];
-					for(let j in v.partitions) {
-						let res = getDfData(j.device);
+					let blockDevices = {};
+					getBlockDevices(substr(k, length(devicesDir) + 1), blockDevices);
+					for(let mount in mounts) {
+						if(!blockDevices[mount.device] && !blockDevices[mount.sourceDevice]) {
+							continue;
+						}
+						let cacheKey = mount.device + ' ' + mount.mounted;
+						let res = dfCache[cacheKey];
+						if(res == null) {
+							res = dfCache[cacheKey] = getDfData(mount);
+						}
 						if(length(res) > 0) {
 							push(filesystems, res);
 						}

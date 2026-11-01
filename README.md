@@ -5,6 +5,21 @@ OpenWrt >= 22.03.
 
 **Dependences:** ucode, ucode-mod-fs, fdisk, smartmontools, smartmontools-drivedb.
 
+Mounted filesystems are mapped to physical disks through the kernel's sysfs
+partition and holder relationships. This supports direct mounts, mdadm arrays,
+and device-mapper layers above arrays without hardcoded device or mount names.
+A shared filesystem appears once under each member disk; its usage figures
+describe the mounted filesystem, rather than the individual RAID member.
+
+Mount discovery regression tests can be run from the repository root on a system
+with ucode and ucode-mod-fs installed:
+
+    ucode tests/mounts.uc
+
+The filesystem table rendering tests require Node.js:
+
+    node tests/view.js
+
 ## Installation notes
 
 **OpenWrt >= 25.12:**
